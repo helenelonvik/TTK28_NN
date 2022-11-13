@@ -1,5 +1,8 @@
+from openfiles import openfiles
 
 def main():
-    print('start')
+    print('starting')
+    openfiles()
+    print('finished')
 
 main()
