@@ -13,33 +13,37 @@ import matplotlib.pyplot as plt
 from keras.utils import to_categorical
 from keras.datasets import fashion_mnist
 from keras.models import Sequential, Model
-from keras.layers import Dense, Input, Activation, Conv2D, MaxPooling2D, Flatten
+from keras.layers import Dense, Input, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, AveragePooling2D,BatchNormalization
 
-
-def neuralNetwork(channels, samples, nb_classes):
+#Add droppout
+def neuralNetwork(channels, samples, nb_classes, dropout_rate =0.5):
     
     model = Sequential()
-    model.add(Conv2D(32, (1,32), activation='relu', input_shape=(channels, samples, 1)))
-    model.add(MaxPooling2D(1,8))
-    model.add(Conv2D(16, (1,32), activation = 'relu'))
-    model.add(MaxPooling2D(1,8))
+
+    #layer 1
+    model.add(Conv2D(8, (11,11), activation='relu',padding='same', input_shape=(channels, samples, 1)))
+    model.add(BatchNormalization())
+    #model.add(MaxPooling2D(1,8))
+    model.add(AveragePooling2D((1,4) ))
+    model.add(Dropout(dropout_rate))
+
+    #layer 2
+    model.add(Conv2D(16, (1,channels), activation = 'relu' ,padding='same'))
+    model.add(BatchNormalization())
+    #model.add(MaxPooling2D(1,8))
+    model.add(AveragePooling2D((1,4) ))
+    model.add(Dropout(dropout_rate))
     
+    """#layer 2
+    model.add(Conv2D(64, (1,32), activation = 'relu' ,padding='same'))
+    model.add(MaxPooling2D(1,8))
+    model.add(Dropout(dropout_rate))
+    """
     
     model.add(Flatten())
-    model.add(Dense(16, activation = 'relu'))
+    model.add(Dense(8, activation = 'relu'))
     model.add(Dense(nb_classes))
-    # Input     
-    #input1   = Input(shape = (channels, samples, 1))
 
-
-    # hidden layers
-    #hidden1 = Conv2D(5, (1, 32), input_shape = (channels, samples, 1))(input1)
-    #hidden1 = Maxpooling2D((2,2))
-    #hidden2 = Dense(4, activation='sigmoid')(hidden1)
-
-    # Output layer
-    #output = Activation('softmax', name='softmax', input_shape=(32, 15, 2560, 5))(hidden1)
-
-    #model = Model(inputs=input1, outputs=output)
     model.summary()
+   
     return model 

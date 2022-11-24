@@ -42,10 +42,10 @@ def openfiles():
 
     model = neuralNetwork(15, 2560, 2)
 
-    model.compile(loss='sparse_categorical_crossentropy', 
+    model.compile(loss='mse', 
                   optimizer='adam', 
                   metrics=['accuracy'])
-    fmodel = model.fit(x_train, np.array(y_train), epochs=10, validation_data=(x_val,np.array(y_val)))
+    fmodel = model.fit(x_train, np.array(y_train), epochs=100, validation_data=(x_val,np.array(y_val)))
     predictions = model.predict(x_test)
     preds = predictions.argmax(axis=-1)
     correct = 0
