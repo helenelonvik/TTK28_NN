@@ -11,7 +11,8 @@ def extractAndFilter(all_data):
     raw_task_data = []
     tags = []
 
-    classes = np.array(classes)-1  # must do it because NN wants classes 0 and 1, but we got 1 and 2
+    classes = np.array(classes)  # must do it because NN wants classes 0 and 1, but we got 1 and 2
+    print(classes)
 
     electrodes = [i for i in range(0,15)]
 

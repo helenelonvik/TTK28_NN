@@ -16,34 +16,26 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Input, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, AveragePooling2D,BatchNormalization
 
 #Add droppout
-def neuralNetwork(channels, samples, nb_classes, dropout_rate =0.5):
+def neuralNetwork(img_size, nb_classes, dropout_rate =0.5):
     
     model = Sequential()
 
     #layer 1
-    model.add(Conv2D(8, (11,11), activation='relu',padding='same', input_shape=(channels, samples, 1)))
-    model.add(BatchNormalization())
-    #model.add(MaxPooling2D(1,8))
-    model.add(AveragePooling2D((1,4) ))
-    model.add(Dropout(dropout_rate))
+    model.add(Conv2D(32,(11,11), activation='relu',padding="same", input_shape=(img_size, img_size, 3)))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.5))
+    #Pooling leads to dimensionality reduction, and implicit translation and rotational invariance
+    # Downsamples the input along its spatial dimensions (height and width) by taking the maximum value over an input window (of size defined by pool_size) for each channel of the input. The window is shifted by strides along each dimension.
+    
+    model.add(Conv2D(64, (5,5), padding="same", activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.5))
 
-    #layer 2
-    model.add(Conv2D(16, (1,channels), activation = 'relu' ,padding='same'))
-    model.add(BatchNormalization())
-    #model.add(MaxPooling2D(1,8))
-    model.add(AveragePooling2D((1,4) ))
-    model.add(Dropout(dropout_rate))
-    
-    """#layer 2
-    model.add(Conv2D(64, (1,32), activation = 'relu' ,padding='same'))
-    model.add(MaxPooling2D(1,8))
-    model.add(Dropout(dropout_rate))
-    """
-    
     model.add(Flatten())
-    model.add(Dense(8, activation = 'relu'))
-    model.add(Dense(nb_classes))
+    model.add(Dense(128, activation = 'relu'))
+    model.add(Dense(nb_classes, activation='softmax'))
 
     model.summary()
    
     return model 
+
