@@ -9,30 +9,27 @@
 
 
 import numpy as np
-import matplotlib.pyplot as plt
-from keras.utils import to_categorical
-from keras.datasets import fashion_mnist
-from keras.models import Sequential, Model
-from keras.layers import Dense, Input, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, AveragePooling2D,BatchNormalization
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 
 #Add droppout
-def neuralNetwork(img_size, nb_classes, dropout_rate =0.5):
+def neuralNetwork(img_size, nb_classes):
     
     model = Sequential()
 
     #layer 1
-    model.add(Conv2D(32,(11,11), activation='relu',padding="same", input_shape=(img_size, img_size, 3)))
+    model.add(Conv2D(32,3, activation='relu',padding="same", input_shape=(img_size, img_size, 3)))
     model.add(MaxPooling2D())
     model.add(Dropout(0.5))
-    #Pooling leads to dimensionality reduction, and implicit translation and rotational invariance
-    # Downsamples the input along its spatial dimensions (height and width) by taking the maximum value over an input window (of size defined by pool_size) for each channel of the input. The window is shifted by strides along each dimension.
     
-    model.add(Conv2D(64, (5,5), padding="same", activation="relu"))
+    #layer 2
+    model.add(Conv2D(64, 3, padding="same", activation="relu"))
     model.add(MaxPooling2D())
     model.add(Dropout(0.5))
 
+    #outputlayer
     model.add(Flatten())
-    model.add(Dense(128, activation = 'relu'))
+    model.add(Dense(60, activation = 'relu')) # Change to 30 / 300?
     model.add(Dense(nb_classes, activation='softmax'))
 
     model.summary()
