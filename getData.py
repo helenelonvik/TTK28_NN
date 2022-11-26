@@ -13,6 +13,7 @@ import cv2
 # example of loading the mnist dataset
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.optimizers import SGD, Adam
 
 from matplotlib import pyplot as plt
 """
@@ -21,8 +22,8 @@ Change outputlayer
 
 """
 
-def getData(type='MIST'):
-    if type=='MIST':
+def getData(type='ST'):
+    if type=='MNIST':
         print('MNIST')
         img_size=28
         (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -40,18 +41,20 @@ def getData(type='MIST'):
         # convert from integers to floats
         train_norm = x_train.astype('float32')
         test_norm = x_test.astype('float32')
+        val_norm = x_val.astype('float32')
         # normalize to range 0-1
         x_train = train_norm / 255.0
         x_test = test_norm / 255.0
+        x_val = val_norm /255.0
 
         model = neuralNetwork(img_size, 10)
         
         callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
         
         model.compile(loss='categorical_crossentropy',          #binary_crossentropy' hvis 2 klasser   sparse_categorical_crossentropy, hvis flere klasser men ikke en hot
-                    optimizer='adam', 
+                    optimizer=SGD(learning_rate=0.01, momentum=0.9), 
                     metrics=['accuracy'])
-        fmodel = model.fit(x_train, y_train, epochs=10, callbacks=[callback], validation_data=(x_val,y_val))
+        fmodel = model.fit(x_train, y_train, epochs=15, callbacks=[callback], validation_data=(x_val,y_val))
         predictions = model.predict(x_test)
         #print(predictions)
         preds = predictions.argmax(axis=-1)
@@ -161,9 +164,9 @@ def getData(type='MIST'):
         callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
         
         model.compile(loss='categorical_crossentropy',          #binary_crossentropy' hvis 2 klasser   sparse_categorical_crossentropy, hvis flere klasser men ikke en hot
-                    optimizer='adam', 
+                    optimizer=Adam(learning_rate=0.001),#SGD(learning_rate=0.01, momentum=0.9), 
                     metrics=['accuracy'])
-        fmodel = model.fit(x_train, y_train, epochs=20, callbacks=[callback], validation_data=(x_val,y_val))
+        fmodel = model.fit(x_train, y_train, epochs=30, validation_data=(x_val,y_val), batch_size=32)  #høyere batch size lavere loss men dårliger accuracy  lavere enn 32 gir lik acc, men dårligere og mere oscillerende loss
         predictions = model.predict(x_test)
         #print(predictions)
         preds = predictions.argmax(axis=-1)

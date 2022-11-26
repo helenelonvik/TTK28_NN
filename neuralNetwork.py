@@ -10,7 +10,7 @@
 
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 
 #Add droppout
 def neuralNetwork(img_size, nb_classes):
@@ -18,14 +18,16 @@ def neuralNetwork(img_size, nb_classes):
     model = Sequential()
 
     #layer 1
-    model.add(Conv2D(32,(3,3), activation='relu', kernel_initializer='he_uniform',padding="same", input_shape=(img_size, img_size, 1)))
-    model.add(MaxPooling2D(2,2))
-    #model.add(Dropout(0.5))
+    model.add(Conv2D(32,(3,3), activation='relu', kernel_initializer='he_uniform',padding="same", input_shape=(img_size, img_size, 3)))
+    model.add(BatchNormalization())  # Uten batch og lr 0.001 70%, men loss er litt høyere  #med batch 74%
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.5)) #Uten gir høyere loss, mer økning
     
     #layer 2
-    #model.add(Conv2D(64, 3, padding="same", activation="relu"))
-    #model.add(MaxPooling2D())
-    #model.add(Dropout(0.5))
+    model.add(Conv2D(64, 3, padding="same", activation="relu"))
+    #model.add(BatchNormalization())
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.5))
 
 
     #outputlayer
