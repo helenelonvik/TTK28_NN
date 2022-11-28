@@ -129,7 +129,6 @@ def getData(type='ST'):
         print('shuffeled')
         x_train, x_test, y_train, y_test = train_test_split(pictures, classes, test_size=0.2, random_state=42)
         x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=42) #0.25*0.8 = 0.2
-
     
         #normalize data
         x_train = np.array(x_train).astype('float32')/255.0
@@ -179,25 +178,47 @@ def getData(type='ST'):
             y = animals[preds[i]]
             y_pred.append(y)
 
+
         print(fmodel.history.keys())
 
+        
+        for i in range(0, 30):
+            thinking =''
+            oneHot=2
+            if(y_pred[i] == 'cane'):
+                thinking='dog'
+                oneHot = 0
+            elif(y_pred[i]=='elefante'):
+                thinking = 'elephant'
+                oneHot = 1
+            else:
+                thinking='sheep'
+
+            string = 'I am ' +str(predictions[i][oneHot]*100)+ ' sure this is a '+ thinking
+            plt.imshow(x_test[i,:,:])
+            plt.title(string)
+            plt.show()
+        
         print("classification accuracy: ", str(round(accuracy_score(y_test,y_pred)*100,3)), "%")
         print("f1 score ", str(round(f1_score(y_test,y_pred, average='micro')*100,3)), "%")
+
         plt.plot(fmodel.history['accuracy'])
         plt.plot(fmodel.history['val_accuracy'])
-        plt.title('model accuracy')
-        plt.ylabel('accuracy')
-        plt.xlabel('epoch')
-        plt.legend(['train', 'val'], loc='upper left')
+        plt.title('Model accuracy')
+        plt.ylabel('Accuracy')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Val'], loc='upper left')
         plt.show()
 
         plt.plot(fmodel.history['loss'])
         plt.plot(fmodel.history['val_loss'])
-        plt.title('model loss')
-        plt.ylabel('loss')
-        plt.xlabel('epoch')
-        plt.legend(['train', 'val'], loc='upper left')
+        plt.title('Model loss')
+        plt.ylabel('Loss')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Val'], loc='upper left')
         plt.show()
+
+
         """pd.DataFrame(fmodel.history).plot(figsize=(8,5))
         plt.show()
 
